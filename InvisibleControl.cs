@@ -2,107 +2,47 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class InvisibleControl : MonoBehaviour
 {
-    public GameObject Paper; // Paper GameObject
-
-    private Material paperMaterial;
+    public GameObject materialX;
+    public GameObject materialZ;
 
     void Start()
     {
-        Renderer paperRenderer = Paper.GetComponent<Renderer>();
-        paperMaterial = paperRenderer.material;
+        Renderer paperRendererX = materialX.GetComponent<Renderer>();
+        Renderer paperRendererZ = materialZ.GetComponent<Renderer>();
     }
 
     void Update()
     {
-        if (Paper == null || paperMaterial == null) return;
+        if (materialX == null || materialZ == null) return;
 
-        float rotationX = Paper.transform.eulerAngles.x;
+        float rotationX = gameObject.transform.eulerAngles.x;
+        float rotationZ = gameObject.transform.eulerAngles.z;
 
-        if (rotationX > 180)
-        {
-            rotationX -= 360;
-        }
+        if (rotationX > 180) rotationX -= 360;
+        if (rotationZ > 180) rotationZ -= 360;
 
         // rotation.x가 -10에서 0 사이일 때 알파 값 조정
-        if (rotationX >= -10f && rotationX <= 0f)
+        if (rotationX >= -20f && rotationX <= 0f)
         {
-            float alpha = Mathf.InverseLerp(-10f, 0f, rotationX); // -10~0 => 0~1로 변환
-            SetMaterialAlpha(alpha);
+            float alpha = Mathf.InverseLerp(-20f, 0f, rotationX); // -10~0 => 0~1로 변환
+            SetMaterialAlpha(alpha, materialX);
         }
-        else if (rotationX < -10f)
+
+        if (rotationZ >= -20f && rotationZ <= 0f)
         {
-            SetMaterialAlpha(0f); // 완전히 투명
-        }
-        else if (rotationX > 0f)
-        {
-            SetMaterialAlpha(1f); // 완전히 불투명
+            float alpha = Mathf.InverseLerp(-20f, 0f, rotationZ); // -10~0 => 0~1로 변환
+            SetMaterialAlpha(alpha, materialZ);
         }
     }
 
-    void SetMaterialAlpha(float alpha)
+    void SetMaterialAlpha(float alpha, GameObject material)
     {
-        if (paperMaterial == null) return;
-
-        Color color = paperMaterial.color;
+        //Color color = paperMaterial.color;
+        Color color = material.GetComponent<Renderer>().material.color;
         color.a = alpha;
-        paperMaterial.color = color;
+        material.GetComponent<Renderer>().material.color = color;
     }
 }
-
-/*
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class UVLamp : MonoBehaviour
-{
-    public GameObject Paper; // Paper GameObject
-    public GameObject ReferenceObject; // 기준이 되는 GameObject
-
-    private Material paperMaterial;
-
-    void Start()
-    {
-        if (Paper != null)
-        {
-            Renderer paperRenderer = Paper.GetComponent<Renderer>();
-            paperMaterial = paperRenderer.material;
-        }
-    }
-
-    void Update()
-    {
-        if (Paper == null || ReferenceObject == null || paperMaterial == null) return;
-
-        Vector3 paperForward = Paper.transform.forward;
-        Vector3 referenceForward = ReferenceObject.transform.forward;
-
-        float angle = Vector3.SignedAngle(referenceForward, paperForward, Vector3.right);
-
-        if (angle >= -10f && angle <= 0f)
-        {
-            float alpha = Mathf.InverseLerp(-10f, 0f, angle); // -10~0 => 0~1로 변환
-            SetMaterialAlpha(alpha);
-        }
-        else if (angle < -10f)
-        {
-            SetMaterialAlpha(0f); // 완전히 투명
-        }
-        else if (angle > 0f)
-        {
-            SetMaterialAlpha(1f); // 완전히 불투명
-        }
-    }
-
-    void SetMaterialAlpha(float alpha)
-    {
-        if (paperMaterial == null) return;
-
-        Color color = paperMaterial.color;
-        color.a = alpha;
-        paperMaterial.color = color;
-    }
-}
-*/
