@@ -18,20 +18,31 @@ public class GrabTest : MonoBehaviour {
             Ray ray = new Ray(palmTransform.position, palmTransform.forward);
             if (Physics.Raycast(ray, out RaycastHit hit, maxGrabDistance))
             {
-                selectedObject = hit.collider.gameObject;
-                PullObject(selectedObject);
+                if (hit.collider.gameObject.GetComponent<Grabbable>() != null)
+                {
+                    selectedObject = hit.collider.gameObject;
+                    PullObject(selectedObject);
+                }
             }
             drawGizmo = true;
         }
 
+        /*
         if (Input.GetKeyUp(KeyCode.Y)) {
             drawGizmo = false;
         }
+        */
 
         if (selectedObject != null && Vector3.Distance(palmTransform.position
-        , selectedObject.transform.position) < 1)
+        , selectedObject.transform.position) < 0.1f)
         {
             hand.Grab();
+            
+            if (hand.GetHeld() != null)
+            {
+                selectedObject = null;
+            }
+            
         }
     }
     void PullObject(GameObject pullObject) {
