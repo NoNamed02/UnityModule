@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class PuzzleManager : MonoBehaviour
@@ -13,7 +14,6 @@ public class PuzzleManager : MonoBehaviour
     {
         
     }
-
     public void ClearPuzzle(Puzzle puzzleName)
     {
         clearPuzzles[(int)puzzleName] = true;
@@ -25,5 +25,13 @@ public class PuzzleManager : MonoBehaviour
         foreach (var puzzle in clearPuzzles)
             if (puzzle == true) count++;
         return count;
+    }
+
+    public float CountPercent()
+    {
+        int trueCount = clearPuzzles.Count(b => b);
+        float percentage = (float)trueCount / clearPuzzles.Length * 100;
+        Debug.Log($"True percentage: {percentage:F2}%");
+        return percentage;
     }
 }
